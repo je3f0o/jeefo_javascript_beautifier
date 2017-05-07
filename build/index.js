@@ -27,18 +27,9 @@ var get_filesize  = function (path) {
 };
 
 var source_files = require("../source_files");
-var libs = [], source = [];
 
-source_files.forEach(function (file) {
-	var code = fse.readFileSync(`./${ file }`, "utf8");
-
-	if (! file.startsWith("node_modules")) {
-		source.push(
-			preprocessor(file, code).trim()
-		);
-	} else {
-		libs.push(code);
-	}
+var source = source_files.map(function (file) {
+	return preprocessor(file, fse.readFileSync(`./${ file }`, "utf8")).trim()
 });
 
 // Compile
@@ -53,8 +44,6 @@ var header = header_compiler({
 });
 
 source = `${ header }jeefo.use(function () {\n\n${ source.join("\n\n") }\n\n});`;
-libs.push(source);
-source = libs.join("\n\n");
 
 var browser_source = `(function (jeefo, $window, $document) { "use strict";\n\n${ source }\n\n}(window.jeefo, window, document));`;
 var node_source    = `\n"use strict";\n\nmodule.exports = function (jeefo) {\n\n${ source }\n\nreturn jeefo;\n\n};`;
