@@ -1,0 +1,46 @@
+{
+  "name": "jeefo_javascript_beautifier",
+  "version": "0.0.1",
+  "description": "jeefo javascript beautifier",
+  "author": {
+    "name": "je3f0o",
+    "email": "je3f0o@gmail.com"
+  },
+  "homepage": "https://github.com/je3f0o/jeefo_javascript_beautifier",
+  "license": "MIT",
+  "copyright": "2017",
+  "main": "index.js",
+  "scripts": {
+    "build": "node build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/je3f0o/jeefo_javascript_beautifier.git"
+  },
+  "keywords": [
+    "jeefo",
+    "compiler",
+    "javascript",
+    "beautifier"
+  ],
+  "devDependencies": {
+    "expect": "^1.20.2",
+    "fs-extra": "^0.30.0",
+    "mocha": "^3.0.2",
+    "pygments": "^0.2.1",
+    "uglify-js": "^2.8.22"
+  },
+  "dependencies": {
+    "jeefo": "^0.0.9",
+    "jeefo_javascript_parser": "^0.0.3"
+  },
+  "uglify_config": {
+    "mangle": {
+      "toplevel": true
+    },
+    "compress": {
+      "comparisons": false
+    },
+    "fromString": true
+  }
+}

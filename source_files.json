@@ -1,0 +1,4 @@
+[
+	"node_modules/jeefo_javascript_parser/dist/jeefo_javascript_parser.js",
+	"src/beautifier.js"
+]
