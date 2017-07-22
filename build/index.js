@@ -1,7 +1,7 @@
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
 * File Name   : index.js
 * Created at  : 2017-04-29
-* Updated at  : 2017-05-07
+* Updated at  : 2017-06-02
 * Author      : jeefo
 * Purpose     :
 * Description :
@@ -29,7 +29,9 @@ var get_filesize  = function (path) {
 var source_files = require("../source_files");
 
 var source = source_files.map(function (file) {
-	return preprocessor(file, fse.readFileSync(`./${ file }`, "utf8")).trim()
+	return preprocessor(file, 
+		fse.readFileSync(`./${ file }`, "utf8")
+	).trim();
 });
 
 // Compile
@@ -43,10 +45,10 @@ var header = header_compiler({
 	Copyright       : _package.copyright
 });
 
-source = `${ header }jeefo.use(function () {\n\n${ source.join("\n\n") }\n\n});`;
+source = `${ header }jeefo.use(function (jeefo) {\n\n${ source.join("\n\n") }\n\n});`;
 
 var browser_source = `(function (jeefo, $window, $document) { "use strict";\n\n${ source }\n\n}(window.jeefo, window, document));`;
-var node_source    = `\n"use strict";\n\nmodule.exports = function (jeefo) {\n\n${ source }\n\nreturn jeefo;\n\n};`;
+var node_source    = `\n"use strict";\n\nmodule.exports = function (jeefo) {\n\n${ source }\n\nreturn jeefo\n\n};`;
 var node_min_source;
 
 browser_source  = header + uglify.minify(browser_source, _package.uglify_config).code;

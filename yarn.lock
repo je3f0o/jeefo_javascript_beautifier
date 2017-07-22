@@ -10,15 +10,15 @@ align-text@^0.1.1, align-text@^0.1.3:
     longest "^1.0.1"
     repeat-string "^1.5.2"
 
-balanced-match@^0.4.1:
-  version "0.4.2"
-  resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-0.4.2.tgz#cb3f3e3c732dc0f01ee70b403f302e61d7709838"
+balanced-match@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.0.tgz#89b4d199ab2bee49de164ea02b89ce462d71b767"
 
-brace-expansion@^1.0.0:
-  version "1.1.7"
-  resolved "https://registry.yarnpkg.com/brace-expansion/-/brace-expansion-1.1.7.tgz#3effc3c50e000531fb720eaff80f0ae8ef23cf59"
+brace-expansion@^1.1.7:
+  version "1.1.8"
+  resolved "https://registry.yarnpkg.com/brace-expansion/-/brace-expansion-1.1.8.tgz#c07b211c7c952ec1f8efd51a77ef0d1d3990a292"
   dependencies:
-    balanced-match "^0.4.1"
+    balanced-match "^1.0.0"
     concat-map "0.0.1"
 
 browser-stdout@1.3.0:
@@ -234,30 +234,30 @@ is-symbol@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/is-symbol/-/is-symbol-1.0.1.tgz#3cc59f00025194b6ab2e38dbae6689256b660572"
 
-jeefo@^0.0.13:
-  version "0.0.13"
-  resolved "https://registry.yarnpkg.com/jeefo/-/jeefo-0.0.13.tgz#6174a3e47a3f90175969950c49f0eb48503caa41"
+jeefo@^0.0.26:
+  version "0.0.26"
+  resolved "https://registry.yarnpkg.com/jeefo/-/jeefo-0.0.26.tgz#ef3be96d7d4ffded08fb108635ae4b291a5f017a"
 
-jeefo_core@^0.0.10:
-  version "0.0.10"
-  resolved "https://registry.yarnpkg.com/jeefo_core/-/jeefo_core-0.0.10.tgz#ece31c290ed47b266ffe78d5f6fc930c6df62178"
+jeefo_core@0.0.17, jeefo_core@^0.0.17:
+  version "0.0.17"
+  resolved "https://registry.yarnpkg.com/jeefo_core/-/jeefo_core-0.0.17.tgz#7f84488d2d5c27e690bfc094a175a07e7b2247ed"
   dependencies:
-    jeefo "^0.0.13"
+    jeefo "^0.0.26"
 
-jeefo_javascript_parser@^0.0.6:
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/jeefo_javascript_parser/-/jeefo_javascript_parser-0.0.6.tgz#16125a435416cfae96ec5aff7767d729d28734e1"
+jeefo_javascript_parser@^0.0.11:
+  version "0.0.11"
+  resolved "https://registry.yarnpkg.com/jeefo_javascript_parser/-/jeefo_javascript_parser-0.0.11.tgz#519c0c3f9b752fe45d290b725b70053d2faad9c7"
   dependencies:
-    jeefo "^0.0.13"
-    jeefo_core "^0.0.10"
-    jeefo_tokenizer "^0.0.21"
+    jeefo "^0.0.26"
+    jeefo_core "^0.0.17"
+    jeefo_tokenizer "^0.0.28"
 
-jeefo_tokenizer@^0.0.21:
-  version "0.0.21"
-  resolved "https://registry.yarnpkg.com/jeefo_tokenizer/-/jeefo_tokenizer-0.0.21.tgz#a5079b59185a61ea88296a0214027137f80de9f3"
+jeefo_tokenizer@^0.0.28:
+  version "0.0.28"
+  resolved "https://registry.yarnpkg.com/jeefo_tokenizer/-/jeefo_tokenizer-0.0.28.tgz#597d0902a7123c49f07da95ee99b468a30ed852b"
   dependencies:
-    jeefo "^0.0.13"
-    jeefo_core "^0.0.10"
+    jeefo "^0.0.26"
+    jeefo_core "0.0.17"
 
 json3@3.3.2:
   version "3.3.2"
@@ -270,8 +270,8 @@ jsonfile@^2.1.0:
     graceful-fs "^4.1.6"
 
 kind-of@^3.0.2:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/kind-of/-/kind-of-3.2.0.tgz#b58abe4d5c044ad33726a8c1525b48cf891bff07"
+  version "3.2.2"
+  resolved "https://registry.yarnpkg.com/kind-of/-/kind-of-3.2.2.tgz#31ea21a734bab9bbb0f32466d893aea51e4a3c64"
   dependencies:
     is-buffer "^1.1.5"
 
@@ -337,10 +337,10 @@ longest@^1.0.1:
   resolved "https://registry.yarnpkg.com/longest/-/longest-1.0.1.tgz#30a0b2da38f73770e8294a0d22e6625ed77d0097"
 
 minimatch@^3.0.2:
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/minimatch/-/minimatch-3.0.3.tgz#2a4e4090b96b2db06a9d7df01055a62a77c9b774"
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/minimatch/-/minimatch-3.0.4.tgz#5166e286457f03306064be5497e8dbb0c3d32083"
   dependencies:
-    brace-expansion "^1.0.0"
+    brace-expansion "^1.1.7"
 
 minimist@0.0.8:
   version "0.0.8"
@@ -353,8 +353,8 @@ mkdirp@0.5.1:
     minimist "0.0.8"
 
 mocha@^3.0.2:
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/mocha/-/mocha-3.3.0.tgz#d29b7428d3f52c82e2e65df1ecb7064e1aabbfb5"
+  version "3.4.2"
+  resolved "https://registry.yarnpkg.com/mocha/-/mocha-3.4.2.tgz#d0ef4d332126dbf18d0d640c9b382dd48be97594"
   dependencies:
     browser-stdout "1.3.0"
     commander "2.9.0"
@@ -434,8 +434,8 @@ tmatch@^2.0.1:
   resolved "https://registry.yarnpkg.com/tmatch/-/tmatch-2.0.1.tgz#0c56246f33f30da1b8d3d72895abaf16660f38cf"
 
 uglify-js@^2.8.22:
-  version "2.8.22"
-  resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-2.8.22.tgz#d54934778a8da14903fa29a326fb24c0ab51a1a0"
+  version "2.8.29"
+  resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-2.8.29.tgz#29c5733148057bb4e1f75df35b7a9cb72e6a59dd"
   dependencies:
     source-map "~0.5.1"
     yargs "~3.10.0"

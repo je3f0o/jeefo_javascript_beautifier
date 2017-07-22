@@ -1,7 +1,7 @@
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
 * File Name   : preprocessor.js
 * Created at  : 2017-04-26
-* Updated at  : 2017-05-07
+* Updated at  : 2017-07-22
 * Author      : jeefo
 * Purpose     :
 * Description :
@@ -106,6 +106,10 @@ pp.namespace("javascript.Preprocessor", [
 			case "Identifier":
 				def = scope.defs[args[0].name] = new this.Def(args[1], args[2]);
 				break;
+		}
+
+		if (! def) {
+			console.log(def, args);
 		}
 
 		switch (def.token.type) {
@@ -271,7 +275,7 @@ pp.namespace("javascript.Preprocessor", [
 			}
 		}
 
-		for (i = scope.level - 1; i >= 1; --i) {
+		for (i = scope.level - 1; i >= 0; --i) {
 			this.compiler.current_indent = this.compiler.current_indent + this.compiler.indentation;
 		}
 		
@@ -316,9 +320,17 @@ pp.namespace("javascript.Preprocessor", [
 		}
 	};
 
+	var z, c = 0, l;
+
 	// Expression {{{2
 	p.expression = function (expression, scope) {
 		var i = 0;
+
+		if (z === expression) {
+			console.log(222, expression, c); 
+			console.log(333, l);
+			process.exit();
+		}
 
 		switch (expression.type) {
 			case "Comment" :
@@ -326,6 +338,10 @@ pp.namespace("javascript.Preprocessor", [
 			case "NumberLiteral" :
 			case "StringLiteral" :
 			case "RegExpLiteral" :
+			case "BooleanLiteral" :
+				return;
+			case "GroupingExpression" :
+				this.expression(expression.expression, scope);
 				return;
 			case "Identifier" :
 				if (scope.defs.hasOwnProperty(expression.name) && ! this.remove_indices) {
@@ -365,7 +381,10 @@ pp.namespace("javascript.Preprocessor", [
 				this.expression(expression.right, scope);
 				break;
 			case "BinaryExpression":
-			case "LogicalExpression":
+			case "EqualityExpression":
+			case "LogicalAndExpression":
+			case "LogicalOrExpression":
+			case "ComparisionExpression":
 				this.expression(expression.left, scope);
 				this.expression(expression.right, scope);
 				break;
@@ -383,7 +402,11 @@ pp.namespace("javascript.Preprocessor", [
 				}
 				break;
 			case "UnaryExpression" :
+				z = expression;
+				++c;
 				this.expression(expression.argument, scope);
+				break;
+			case "NullLiteral" :
 				break;
 			case "ArrayLiteral" :
 				break;
@@ -430,8 +453,10 @@ pp.namespace("javascript.Preprocessor", [
 				});
 				break;
 			default:
-				console.log("UNIMPLEMENTED expression", expression.type);
+				console.log("UNIMPLEMENTED expression", expression.type, expression.start);
 		}
+
+		l = expression;
 	};
 
 	// Handler arguments {{{2
@@ -459,6 +484,9 @@ pp.namespace("javascript.Preprocessor", [
 			case "IfStatement" :
 				this.process([statement], scope);
 				break;
+			case "WhileStatement" :
+				this.statement(statement.statement, scope);
+				break;
 			case "ForStatement" :
 			case "SwitchStatement" :
 				this.process([statement], scope);
@@ -475,6 +503,9 @@ pp.namespace("javascript.Preprocessor", [
 	p.process = function (tokens, scope) {
 		for (var i = 0; i < tokens.length; ++i) {
 
+if (! tokens[i]) {
+	console.log(i, tokens);
+}
 			SWITCH:
 			switch (tokens[i].type) {
 				// Comment {{{3
@@ -586,7 +617,7 @@ pp.namespace("javascript.Preprocessor", [
 
 // Public funciton {{{1
 pp.namespace("javascript.ES5_preprocessor", [
-	"javascript.ES5_parser",
+	"javascript.ES6_parser",
 	"javascript.Preprocessor",
 ], function (parser, JavascriptPreprocessor) {
 	var PublicJavascriptPreprocessor = function (defs, middlewares) {
@@ -601,7 +632,11 @@ pp.namespace("javascript.ES5_preprocessor", [
 
 	p.define = function (name, definition, is_return) {
 		var code = `PP.define(${ name }, ${ definition.toString() }, ${ is_return });`;
-		var file = parser("[IN MEMORY]", code);
+		var file = {
+			program : {
+				body : parser.parse(code)
+			}
+		};
 
 		this.pp.compiler.current_indent = '';
 
@@ -622,8 +657,14 @@ pp.namespace("javascript.ES5_preprocessor", [
 	};
 
 	p.process = function (filename, source_code, defs, indent, indentation) {
+		console.log(882131, filename);
 		var i    = 0,
-			file = this.parser(filename, source_code),
+			file = {
+				code : source_code,
+				program : {
+					body : parser.parse(source_code)
+				}
+			},
 			pp   = new this.JavascriptPreprocessor(file, this.get_defs(defs), indent, indentation);
 
 		for (; i < this.middlewares.length; ++i) {

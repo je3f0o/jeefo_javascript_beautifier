@@ -4,18 +4,18 @@
 module.exports = function (jeefo) {
 
 /**
- * jeefo_javascript_beautifier : v0.0.3
+ * jeefo_javascript_beautifier : v0.0.4
  * Author                      : je3f0o, <je3f0o@gmail.com>
  * Homepage                    : https://github.com/je3f0o/jeefo_javascript_beautifier
  * License                     : The MIT License
  * Copyright                   : 2017
  **/
-jeefo.use(function () {
+jeefo.use(function (jeefo) {
 
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
 * File Name   : beautifier.js
 * Created at  : 2017-04-20
-* Updated at  : 2017-05-07
+* Updated at  : 2017-07-22
 * Author      : jeefo
 * Purpose     :
 * Description :
@@ -34,6 +34,12 @@ jeefo.module("jeefo_javascript_beautifier", ["jeefo_javascript_parser"]).namespa
 	p.$new = function () {
 		var instance = new this.Constructor(this.indent, this.indentation);
 		if (this.middlewares) {
+//ignore:start
+			instance.middlewares = new Array(this.middlewares.length);
+			for (var i = this.middlewares.length - 1; i >= 0; --i) {
+				instance.middlewares[i] = this.middlewares[i];
+			}
+//ignore:end
 			ARRAY_COPY(instance.middlewares, this.middlewares);
 		}
 		return instance;
@@ -60,35 +66,33 @@ jeefo.module("jeefo_javascript_beautifier", ["jeefo_javascript_parser"]).namespa
 
 	// Binary expression handler {{{2
 	p.compile_binary_expression = function (token, operator) {
-		switch (token.type) {
-			case "BinaryExpression" :
-			case "LogicalExpression" :
-				switch (operator) {
-					case '%' :
-					case '/' :
-					case '*' :
-						switch (token.operator) {
-							case '%' :
-							case '/' :
-							case '*' :
-								return this.compile(token);
-							default:
-								return '(' + this.compile(token) + ')';
-						}
-						break;
-					case '-' :
-					case '+' :
-						switch (token.operator) {
-							case '-' :
-							case '+' :
-								return this.compile(token);
-							default:
-								return '(' + this.compile(token) + ')';
-						}
-						break;
-					default:
+		switch (operator) {
+			case '%' :
+			case '/' :
+			case '*' :
+				switch (token.operator) {
+					case '%'       :
+					case '/'       :
+					case '*'       :
+					case undefined :
 						return this.compile(token);
+					default:
+						return '(' + this.compile(token) + ')';
 				}
+				break;
+			case '-' :
+			case '+' :
+				switch (token.operator) {
+					case '-'       :
+					case '+'       :
+					case undefined :
+						return this.compile(token);
+					default:
+						return '(' + this.compile(token) + ')';
+				}
+				break;
+			default:
+				return this.compile(token);
 		}
 
 		return this.compile(token);
@@ -257,6 +261,8 @@ if (!this) {
 				return "return" + (token.argument ? ' ' + this.compile(token.argument) : '') + ';';
 
 			// Expressions {{{3
+			case "GroupingExpression":
+				return '(' + this.compile(token.expression) + ')';
 			case "ConditionalExpression":
 				return this.compile(token.test) + " ? " + this.compile(token.consequent) + " : " + this.compile(token.alternate);
 			case "CallExpression":
@@ -297,14 +303,18 @@ if (!this) {
 
 				return "new " + this.compile(token.callee) + '(' + args + ')';
 			case "BinaryExpression":
-			case "LogicalExpression":
 				return this.compile_binary_expression(token.left, token.operator) + ' ' + token.operator + ' ' + this.compile_binary_expression(token.right, token.operator);
+			case "LogicalAndExpression":
+				return this.compile_binary_expression(token.left, token.operator) + " && " + this.compile_binary_expression(token.right, token.operator);
+			case "LogicalOrExpression":
+				return this.compile_binary_expression(token.left, token.operator) + " || " + this.compile_binary_expression(token.right, token.operator);
 			case "AssignmentExpression":
 				return this.compile(token.left) + ' ' + token.operator + ' ' + this.compile(token.right);
 			case "TemplateLiteralExpression":
 				switch (token.expression.type) {
-					case "BinaryExpression" :
-					case "LogicalExpression" :
+					case "BinaryExpression"      :
+					case "LogicalOrExpression"   :
+					case "LogicalAndExpression"  :
 					case "ConditionalExpression" :
 						return '(' + this.compile(token.expression) + ')';
 				}
@@ -323,7 +333,7 @@ if (!this) {
 					}
 				}
 
-				return "function " + (token.id ? token.id.name + ' ' : '') + '(' + (params || '') + ") " + this.compile(token.body);
+				return "function " + (token.id ? (token.id.name + ' ') : '') + '(' + (params || '') + ") " + this.compile(token.body);
 
 			// Literals {{{3
 			case "StringLiteral":
@@ -462,6 +472,6 @@ if (!this) {
 
 });
 
-return jeefo;
+return jeefo
 
 };

@@ -1,7 +1,7 @@
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
 * File Name   : beautifier.js
 * Created at  : 2017-04-20
-* Updated at  : 2017-05-07
+* Updated at  : 2017-07-22
 * Author      : jeefo
 * Purpose     :
 * Description :
@@ -27,7 +27,6 @@ var MODULE_NAME = _package.name;
 module.exports = function (jeefo) {
 
 // ignore:end
-
 // Javascript Beautifier {{{1
 jeefo.module(MODULE_NAME, ["jeefo_javascript_parser"]).namespace("javascript.Beautifier", function () {
 	var JavascriptBeautifier = function (indent, indentation) {
@@ -73,35 +72,33 @@ jeefo.module(MODULE_NAME, ["jeefo_javascript_parser"]).namespace("javascript.Bea
 
 	// Binary expression handler {{{2
 	p.compile_binary_expression = function (token, operator) {
-		switch (token.type) {
-			case "BinaryExpression" :
-			case "LogicalExpression" :
-				switch (operator) {
-					case '%' :
-					case '/' :
-					case '*' :
-						switch (token.operator) {
-							case '%' :
-							case '/' :
-							case '*' :
-								return this.compile(token);
-							default:
-								return `(${ this.compile(token) })`;
-						}
-						break;
-					case '-' :
-					case '+' :
-						switch (token.operator) {
-							case '-' :
-							case '+' :
-								return this.compile(token);
-							default:
-								return `(${ this.compile(token) })`;
-						}
-						break;
-					default:
+		switch (operator) {
+			case '%' :
+			case '/' :
+			case '*' :
+				switch (token.operator) {
+					case '%'       :
+					case '/'       :
+					case '*'       :
+					case undefined :
 						return this.compile(token);
+					default:
+						return `(${ this.compile(token) })`;
 				}
+				break;
+			case '-' :
+			case '+' :
+				switch (token.operator) {
+					case '-'       :
+					case '+'       :
+					case undefined :
+						return this.compile(token);
+					default:
+						return `(${ this.compile(token) })`;
+				}
+				break;
+			default:
+				return this.compile(token);
 		}
 
 		return this.compile(token);
@@ -270,6 +267,8 @@ if (!this) {
 				return `return${ (token.argument ? ' ' + this.compile(token.argument) : '') };`;
 
 			// Expressions {{{3
+			case "GroupingExpression":
+				return `(${ this.compile(token.expression) })`;
 			case "ConditionalExpression":
 				return `${ this.compile(token.test) } ? ${ this.compile(token.consequent) } : ${ this.compile(token.alternate) }`;
 			case "CallExpression":
@@ -310,14 +309,18 @@ if (!this) {
 
 				return `new ${ this.compile(token.callee) }(${ args })`;
 			case "BinaryExpression":
-			case "LogicalExpression":
 				return `${ this.compile_binary_expression(token.left, token.operator) } ${ token.operator } ${ this.compile_binary_expression(token.right, token.operator) }`;
+			case "LogicalAndExpression":
+				return `${ this.compile_binary_expression(token.left, token.operator) } && ${ this.compile_binary_expression(token.right, token.operator) }`;
+			case "LogicalOrExpression":
+				return `${ this.compile_binary_expression(token.left, token.operator) } || ${ this.compile_binary_expression(token.right, token.operator) }`;
 			case "AssignmentExpression":
 				return `${ this.compile(token.left) } ${ token.operator } ${ this.compile(token.right) }`;
 			case "TemplateLiteralExpression":
 				switch (token.expression.type) {
-					case "BinaryExpression" :
-					case "LogicalExpression" :
+					case "BinaryExpression"      :
+					case "LogicalOrExpression"   :
+					case "LogicalAndExpression"  :
 					case "ConditionalExpression" :
 						return `(${ this.compile(token.expression) })`;
 				}
@@ -336,7 +339,7 @@ if (!this) {
 					}
 				}
 
-				return `function ${ (token.id ? token.id.name + ' ' : '') }(${ params || '' }) ${ this.compile(token.body) }`;
+				return `function ${ (token.id ? (token.id.name + ' ') : '') }(${ params || '' }) ${ this.compile(token.body) }`;
 
 			// Literals {{{3
 			case "StringLiteral":
